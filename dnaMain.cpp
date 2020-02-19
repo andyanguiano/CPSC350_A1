@@ -4,12 +4,12 @@
 
 using namespace std;
 
-int main(int argc, char **charv){
+int main(int argc, char **argv){
   ifstream infs;
   ofstream outfs;
 
   //opens file and reads argument
-  infs.open(charv[0]);
+  infs.open(argv[1]);
   //error checking
   if(!infs.is_open()){
     cout << "Could not open file" << endl;
@@ -46,7 +46,7 @@ int main(int argc, char **charv){
   double tc = 0;
   double tt = 0;
   double tg = 0;
-  doubel ga = 0;
+  double ga = 0;
   double gc = 0;
   double gt = 0;
   double gg = 0;
@@ -54,17 +54,17 @@ int main(int argc, char **charv){
 
 
   //while loop calculating mean
-  while(getline(infs, line) != ""){
+  while(getline(infs, line)){
     // for loop iterating through char in line
     for(int i = 0; i < line.length(); ++i){
       sum += 1;
     }
-    numLine += 1;
+    numLines += 1;
     mean = sum/numLines;
   }
 
   //compute standard dev and variance
-  while(getline(infs, line) != ""){
+  while(getline(infs, line)){
     // for loop getting length of line
     for(int i = 0; i < line.length(); ++i){
         sum += 1;
@@ -73,63 +73,63 @@ int main(int argc, char **charv){
     topVar = pow(sum - mean, 2);
     totalTopVar += topVar;
   }
-  varience = totalTopVar/(numLines - 1);
+  variance = totalTopVar/(numLines - 1);
   stddev = sqrt(variance);
 
 
 
   //while loop calculating probability
-  while(getline(infs, line) != ""){
+  while(getline(infs, line)){
     //converts all to lowercase
-    line.tolower();
+    //line.tolower();
     // for loop iterating through char in line
     for(int i = 0; i < line.length(); ++i){
       totalLetters += 1;
 
-      if(line[i] = "a"){
+      if(line[i] == 'a'){
         a += 1;
         //what if it is 0
 
-        if(line[i-1] = "a"){
+        if(line[i-1] == 'a'){
           aa += 1;
-        }else if(line[i-1] = "c"){
+        }else if(line[i-1] == 'c'){
           ac += 1;
-        }else if(line[i-1] = "t"){
+        }else if(line[i-1] == 't'){
           at += 1;
-        }else if(line[i-1] = "g"){
+        }else if(line[i-1] == 'g'){
           ag += 1;
         }
-      }else if(line[i] = "c"){
+      }else if(line[i] == 'g'){
         c += 1;
-        if(line[i-1] = "a"){
+        if(line[i-1] == 'a'){
           ca += 1;
-        }else if(line[i-1] = "c"){
+        }else if(line[i-1] == 'c'){
           cc += 1;
-        }else if(line[i-1] = "t"){
+        }else if(line[i-1] == 't'){
           ct += 1;
-        }else if(line[i-1] = "g"){
+        }else if(line[i-1] == 'g'){
           cg += 1;
         }
-      }else if(line[i] = "g"){
+      }else if(line[i] == 'g'){
         g += 1;
-        if(line[i-1] = "a"){
+        if(line[i-1] == 'a'){
           ga += 1;
-        }else if(line[i-1] = "c"){
+        }else if(line[i-1] == 'c'){
           gc += 1;
-        }else if(line[i-1] = "t"){
+        }else if(line[i-1] == 't'){
           gt += 1;
-        }else if(line[i-1] = "g"){
+        }else if(line[i-1] == 'g'){
           gg += 1;
         }
-      }else if(line[i] = "t"){
+      }else if(line[i] == 't'){
         t += 1;
-        if(line[i-1] = "a"){
+        if(line[i-1] == 'a'){
           ta += 1;
-        }else if(line[i-1] = "c"){
+        }else if(line[i-1] == 'c'){
           tc += 1;
-        }else if(line[i-1] = "t"){
+        }else if(line[i-1] == 't'){
           tt += 1;
-        }else if(line[i-1] = "g"){
+        }else if(line[i-1] == 'g'){
           tg += 1;
         }
       }
@@ -158,13 +158,14 @@ int main(int argc, char **charv){
 
 
   //outputting to a new file
-  outfs.open(andyAnguiano.out);
+  outfs.open("andyAnguiano.out");
 
   outfs << "Andy Anguiano" << endl;
   outfs << "2316199" << endl;
   outfs << endl;
   outfs << endl;
 
+  outfs << "Sum of lines: " << numLines << endl;
   outfs << "Mean of line length: " << mean << endl;
   outfs << "Variance of line length: " << variance;
   outfs << "Standard Deviation of line length: " << stddev << endl;
@@ -174,7 +175,7 @@ int main(int argc, char **charv){
   outfs << "The probabilites of the following items:" << endl;
   outfs << "A: " << probA << endl;
   outfs << "C: " << probC << endl;
-  outfs << "T: " << progT << endl;
+  outfs << "T: " << probT << endl;
   outfs << "G: " << probG << endl;
   outfs << "AA: " << aa << endl;
   outfs << "AC: " << ac << endl;
