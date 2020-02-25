@@ -9,15 +9,16 @@ int main(int argc, char **argv){
   ofstream outfs;
   string fName = argv[1];
   int answer = 0;
+  string strAnswer = "";
 
   string line = "";
   int lengthLine = 0;
   int sum = 0;
   int numLines = 0;
   double mean = 0;
-  int variance = 0;
+  double variance = 0;
   double topVar;
-  int totalTopVar;
+  double totalTopVar;
   double stddev = 0;
 
   int a = 0;
@@ -78,6 +79,7 @@ int main(int argc, char **argv){
   while(answer == 0){
     //opens file and reads argument
     infs.open(fName);
+    cout << "1";
 
     //error checking
     if(!infs.is_open()){
@@ -87,69 +89,88 @@ int main(int argc, char **argv){
 
     //while loop calculating mean
     while(getline(infs, line)){
+      cout << "2";
       // for loop iterating through char in line
       for(int i = 0; i < line.size(); ++i){
         sum += 1;
         totalLetters += 1;
+        cout << "3";
 
-        if(line[i] == 'a'){
+        if(tolower(line.at(i)) == 'a'){
+          cout << "4";
           a += 1;
-          //what if it is 0
-
-          if(line[i-1] == 'a'){
-            aa += 1;
-          }else if(line[i-1] == 'c'){
-            ac += 1;
-          }else if(line[i-1] == 't'){
-            at += 1;
-          }else if(line[i-1] == 'g'){
-            ag += 1;
-          }
-        }else if(line[i] == 'g'){
+        }else if(tolower(line.at(i)) == 'g'){
           c += 1;
-          if(line[i-1] == 'a'){
-            ca += 1;
-          }else if(line[i-1] == 'c'){
-            cc += 1;
-          }else if(line[i-1] == 't'){
-            ct += 1;
-          }else if(line[i-1] == 'g'){
-            cg += 1;
-          }
-        }else if(line[i] == 'g'){
+        }else if(tolower(line.at(i)) == 'g'){
           g += 1;
-          if(line[i-1] == 'a'){
-            ga += 1;
-          }else if(line[i-1] == 'c'){
-            gc += 1;
-          }else if(line[i-1] == 't'){
-            gt += 1;
-          }else if(line[i-1] == 'g'){
-            gg += 1;
-          }
-        }else if(line[i] == 't'){
+        }else if(tolower(line.at(i)) == 't'){
           t += 1;
-          if(line[i-1] == 'a'){
-            ta += 1;
-          }else if(line[i-1] == 'c'){
-            tc += 1;
-          }else if(line[i-1] == 't'){
-            tt += 1;
-          }else if(line[i-1] == 'g'){
-            tg += 1;
-          }
         }
       }
+
+      for(int i = 0; i < line.size(); i+=2){
+        cout << "5";
+        if(tolower(line.at(i)) == 'a' && tolower(line.at(i+1)) == 'a'){
+          aa += 1;
+        }else if(tolower(line.at(i)) == 'a' && tolower(line.at(i+1)) == 'c'){
+          ac += 1;
+        }else if(tolower(line.at(i)) == 'a' && tolower(line.at(i+1)) == 't'){
+          at += 1;
+        }else if(tolower(line.at(i)) == 'a' && tolower(line.at(i+1)) == 'g'){
+          ag += 1;
+        }else if(tolower(line.at(i)) == 'c' && tolower(line.at(i+1)) == 'a'){
+          ca += 1;
+        }else if(tolower(line.at(i)) == 'c' && tolower(line.at(i+1)) == 'c'){
+          cc += 1;
+        }else if(tolower(line.at(i)) == 'c' && tolower(line.at(i+1)) == 't'){
+          ct += 1;
+        }else if(tolower(line.at(i)) == 'c' && tolower(line.at(i+1)) == 'g'){
+          cg += 1;
+        }else if(tolower(line.at(i)) == 'g' && tolower(line.at(i+1)) == 'a'){
+          ga += 1;
+        }else if(tolower(line.at(i)) == 'g' && tolower(line.at(i+1)) == 'c'){
+          gc += 1;
+        }else if(tolower(line.at(i)) == 'g' && tolower(line.at(i+1)) == 't'){
+          gt += 1;
+        }else if(tolower(line.at(i)) == 'g' && tolower(line.at(i+1)) == 'g'){
+          gg += 1;
+        }else if(tolower(line.at(i)) == 't' && tolower(line.at(i+1)) == 'a'){
+          ta += 1;
+        }else if(tolower(line.at(i)) == 't' && tolower(line.at(i+1)) == 'c'){
+          tc += 1;
+        }else if(tolower(line.at(i)) == 't' && tolower(line.at(i+1)) == 't'){
+          tt += 1;
+        }else if(tolower(line.at(i)) == 't' && tolower(line.at(i+1)) == 'g'){
+          tg += 1;
+        }
+      }
+
+
+      cout << "6";
       numLines += 1;
       mean = sum/numLines;
       //calculating variance and stadard deviation
       topVar = pow(sum - mean, 2);
       totalTopVar += topVar;
     }
-
+    cout << "7";
     variance = totalTopVar/(numLines - 1);
     stddev = sqrt(variance);
     infs.close();
+
+    cout << "Would you like to process another file? (yes/no)" << endl;
+    cin >> strAnswer;
+    if(strAnswer == "yes"){
+      cout << "What is the file name?" << endl;
+      cin >> fName;
+      continue;
+    }else if(strAnswer == "no"){
+      cout << "Exiting...";
+      answer = 1;
+    }else{
+      cout << "That was not an option";
+      break;
+    }
   }
 
 
@@ -203,8 +224,6 @@ int main(int argc, char **argv){
     outfs << "TC: " << tcProb << endl;
     outfs << "TT: " << ttProb << endl;
     outfs << "TG: " << tgProb << endl;
-
-
 
 
   //closes the file
