@@ -30,6 +30,7 @@ int main(int argc, char **argv){
   double probT = 0;
   double probG = 0;
   double totalLetters = 0;
+  double bigramTotalLetters = 0;
 
   double aa = 0;
   double ac = 0;
@@ -79,7 +80,6 @@ int main(int argc, char **argv){
   while(answer == 0){
     //opens file and reads argument
     infs.open(fName);
-    cout << "1";
 
     //error checking
     if(!infs.is_open()){
@@ -89,14 +89,12 @@ int main(int argc, char **argv){
 
     //while loop calculating mean and totals
     while(getline(infs, line)){
-      cout << "2";
       //total letters
       totalLetters += line.size();
       //number of lines
       numLines += 1;
       // for loop iterating through char in line
       for(int i = 0; i < line.size(); ++i){
-        cout << "3";
         //counts evertime an instance of a, c, g, t come up
         if(tolower(line.at(i)) == 'a'){
           a += 1;
@@ -110,7 +108,6 @@ int main(int argc, char **argv){
       }
       // iterates over every 2 nucleotides to see whether nucleotide bigrams are formed
       for(int i = 0; i < line.size(); i+=2){
-        cout << "5";
         if(tolower(line.at(i)) == 'a' && tolower(line.at(i+1)) == 'a'){
           aa += 1;
         }else if(tolower(line.at(i)) == 'a' && tolower(line.at(i+1)) == 'c'){
@@ -145,15 +142,13 @@ int main(int argc, char **argv){
           tg += 1;
         }
       }
-
-      cout << "6";
       //calculates mean
       mean = totalLetters/numLines;
     }
     //closes file
     infs.close();
 
-    //opens file again now that mean is set
+    //calculating standard deviation and variance now that mean is set
     infs.open(fName);
     while(getline(infs, line)){
       int lineSum = line.size();
@@ -161,7 +156,6 @@ int main(int argc, char **argv){
       topVar = pow(lineSum - mean, 2);
       totalTopVar += topVar;
     }
-    cout << "7";
     variance = totalTopVar/(numLines - 1);
     stddev = sqrt(variance);
     //closes file
@@ -172,32 +166,35 @@ int main(int argc, char **argv){
     probC = c/totalLetters;
     probG = g/totalLetters;
     probT = t/totalLetters;
-    aaProb = aa/totalLetters;
-    acProb = ac/totalLetters;
-    atProb = at/totalLetters;
-    agProb = ag/totalLetters;
-    caProb = ca/totalLetters;
-    ccProb = cc/totalLetters;
-    ctProb = ct/totalLetters;
-    cgProb = cg/totalLetters;
-    gaProb = ga/totalLetters;
-    gcProb = gc/totalLetters;
-    ggProb = gg/totalLetters;
-    gtProb = gt/totalLetters;
-    taProb = ta/totalLetters;
-    tcProb = tc/totalLetters;
-    tgProb = tg/totalLetters;
-    ttProb = tt/totalLetters;
+
+    //change totalLetters since every two nucleotides were looked over
+    bigramTotalLetters = totalLetters / 2;
+    aaProb = aa/bigramTotalLetters;
+    acProb = ac/bigramTotalLetters;
+    atProb = at/bigramTotalLetters;
+    agProb = ag/bigramTotalLetters;
+    caProb = ca/bigramTotalLetters;
+    ccProb = cc/bigramTotalLetters;
+    ctProb = ct/bigramTotalLetters;
+    cgProb = cg/bigramTotalLetters;
+    gaProb = ga/bigramTotalLetters;
+    gcProb = gc/bigramTotalLetters;
+    ggProb = gg/bigramTotalLetters;
+    gtProb = gt/bigramTotalLetters;
+    taProb = ta/bigramTotalLetters;
+    tcProb = tc/bigramTotalLetters;
+    tgProb = tg/bigramTotalLetters;
+    ttProb = tt/bigramTotalLetters;
 
     // begins outputting results to new file
-    outfs << "Sum of lines: " << numLines << endl;
+    outfs << "Sum of the length of the DNA strings: " << totalLetters << endl;
     outfs << "Mean of line length: " << mean << endl;
     outfs << "Variance of line length: " << variance << endl;
     outfs << "Standard Deviation of line length: " << stddev << endl;
 
     outfs << endl;
 
-    outfs << "The probabilities of the following items:" << endl;
+    outfs << "The relative probabilities of each nucleotide and nucleotide bigram:" << endl;
     outfs << "A: " << probA << endl;
     outfs << "C: " << probC << endl;
     outfs << "T: " << probT << endl;
@@ -218,6 +215,7 @@ int main(int argc, char **argv){
     outfs << "TC: " << tcProb << endl;
     outfs << "TT: " << ttProb << endl;
     outfs << "TG: " << tgProb << endl;
+    outfs << endl;
 
     //Gaussian Distribution
     //for loop for 100 lines
