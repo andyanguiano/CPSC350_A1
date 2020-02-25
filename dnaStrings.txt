@@ -1,5 +1,6 @@
-ACATCTG
+AATCTG
 AGTA
-agacatgacgt
+agacatgacg
 AtgCATGa
-aCtGGGA
+aCtGGG
+ccct

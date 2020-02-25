@@ -12,25 +12,24 @@ int main(int argc, char **argv){
   string strAnswer = "";
 
   string line = "";
-  int lengthLine = 0;
-  int sum = 0;
-  int numLines = 0;
-  double mean = 0;
+  double lengthLine = 0;
+  double numLines = 0;
+  double mean = 0.0;
   double variance = 0;
   double topVar;
   double totalTopVar;
   double stddev = 0;
 
-  int a = 0;
-  int c = 0;
-  int t = 0;
-  int g = 0;
+  double a = 0;
+  double c = 0;
+  double t = 0;
+  double g = 0;
 
   double probA = 0;
   double probC = 0;
   double probT = 0;
   double probG = 0;
-  int totalLetters = 0;
+  double totalLetters = 0;
 
   double aa = 0;
   double ac = 0;
@@ -76,6 +75,7 @@ int main(int argc, char **argv){
   outfs << endl;
   outfs << endl;
 
+//while user is not parsing another file
   while(answer == 0){
     //opens file and reads argument
     infs.open(fName);
@@ -87,19 +87,20 @@ int main(int argc, char **argv){
       return 1;
     }
 
-    //while loop calculating mean
+    //while loop calculating mean and totals
     while(getline(infs, line)){
       cout << "2";
+      //total letters
+      totalLetters += line.size();
+      //number of lines
+      numLines += 1;
       // for loop iterating through char in line
       for(int i = 0; i < line.size(); ++i){
-        sum += 1;
-        totalLetters += 1;
         cout << "3";
-
+        //counts evertime an instance of a, c, g, t come up
         if(tolower(line.at(i)) == 'a'){
-          cout << "4";
           a += 1;
-        }else if(tolower(line.at(i)) == 'g'){
+        }else if(tolower(line.at(i)) == 'c'){
           c += 1;
         }else if(tolower(line.at(i)) == 'g'){
           g += 1;
@@ -107,7 +108,7 @@ int main(int argc, char **argv){
           t += 1;
         }
       }
-
+      // iterates over every 2 nucleotides to see whether nucleotide bigrams are formed
       for(int i = 0; i < line.size(); i+=2){
         cout << "5";
         if(tolower(line.at(i)) == 'a' && tolower(line.at(i+1)) == 'a'){
@@ -145,35 +146,28 @@ int main(int argc, char **argv){
         }
       }
 
-
       cout << "6";
-      numLines += 1;
-      mean = sum/numLines;
+      //calculates mean
+      mean = totalLetters/numLines;
+    }
+    //closes file
+    infs.close();
+
+    //opens file again now that mean is set
+    infs.open(fName);
+    while(getline(infs, line)){
+      int lineSum = line.size();
       //calculating variance and stadard deviation
-      topVar = pow(sum - mean, 2);
+      topVar = pow(lineSum - mean, 2);
       totalTopVar += topVar;
     }
     cout << "7";
     variance = totalTopVar/(numLines - 1);
     stddev = sqrt(variance);
+    //closes file
     infs.close();
 
-    cout << "Would you like to process another file? (yes/no)" << endl;
-    cin >> strAnswer;
-    if(strAnswer == "yes"){
-      cout << "What is the file name?" << endl;
-      cin >> fName;
-      continue;
-    }else if(strAnswer == "no"){
-      cout << "Exiting...";
-      answer = 1;
-    }else{
-      cout << "That was not an option";
-      break;
-    }
-  }
-
-
+    //calculates probabilites
     probA = a/totalLetters;
     probC = c/totalLetters;
     probG = g/totalLetters;
@@ -195,15 +189,15 @@ int main(int argc, char **argv){
     tgProb = tg/totalLetters;
     ttProb = tt/totalLetters;
 
-
+    // begins outputting results to new file
     outfs << "Sum of lines: " << numLines << endl;
     outfs << "Mean of line length: " << mean << endl;
-    outfs << "Variance of line length: " << variance;
+    outfs << "Variance of line length: " << variance << endl;
     outfs << "Standard Deviation of line length: " << stddev << endl;
 
     outfs << endl;
 
-    outfs << "The probabilites of the following items:" << endl;
+    outfs << "The probabilities of the following items:" << endl;
     outfs << "A: " << probA << endl;
     outfs << "C: " << probC << endl;
     outfs << "T: " << probT << endl;
@@ -225,11 +219,53 @@ int main(int argc, char **argv){
     outfs << "TT: " << ttProb << endl;
     outfs << "TG: " << tgProb << endl;
 
+    //Gaussian Distribution
+    //for loop for 100 lines
+    string dnaOutput = "";
+    for(int i = 0; i < 1000; ++i){
+      //creates random numbers
+      double rand1 = (rand()) / (double)(RAND_MAX);
+      double rand2 = (rand()) / (double)(RAND_MAX);
+      //begins calculations
+      double isC = (sqrt(-2 * log(rand1)) * (cos(2 * M_PI * rand2)));
+      double isD = stddev * isC + mean;
+      isD = round(isD);
+      //writing each nucleotide line
+      for(int j = 0; j < isD; ++j){
+        double rand3 = (rand()) / (double)(RAND_MAX);
+        if(rand3 <= probA){
+          dnaOutput += "a";
+        }else if(rand3 <= probA + probC){
+          dnaOutput += "c";
+        }else if(rand3 <= probA + probC + probG){
+          dnaOutput += "g";
+        }else if(rand3 <= probA + probC + probG + probT){
+          dnaOutput += "t";
+        }
+      }
+      //outputs each line to new file
+      outfs << dnaOutput << endl;
+      //resets string to begin new line
+      dnaOutput = "";
+    }
 
-  //closes the file
-  outfs.close();
-
-
+    //checks to see if user would like to parse another file
+    cout << "Would you like to process another file? (yes/no)" << endl;
+    cin >> strAnswer;
+    if(strAnswer == "yes"){
+      cout << "What is the file name?" << endl;
+      cin >> fName;
+      continue;
+    }else if(strAnswer == "no"){
+      cout << "Exiting..." << endl;
+      //closes file and exits while loop
+      outfs.close();
+      answer = 1;
+    }else{
+      cout << "That was not an option";
+      break;
+    }
+  }
 
   return 0;
 }
